@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Form from "./Form";
+import Card from "./components/Card";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import { Fragment, useEffect, useState } from "react";
+
+const initialState = [
+  {
+    id: 1,
+    customerName: "Israa Othman",
+    accountNumber: "123456",
+    accountType: "Savings",
+  },
+  {
+    id: 2,
+    customerName: "Ahmad Zahran",
+    accountNumber: "987654",
+    accountType: "Student account",
+  },
+];
+
+const Main = (props) => {
+  return (
+    <div className="grid grid-cols-12 gap-x-16 gap-y-4 items-center justify-center w-screen lg:max-w-[80vw] mx-auto pb-24">
+      {props.accounts.map((account) => {
+        return (
+          <Card
+            key={account.id}
+            id={account.id}
+            name={account.customerName}
+            number={account.accountNumber}
+            type={account.accountType}
+            remove={props.remove}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [accounts, setAccounts] = useState(initialState);
+
+  const handleUpdate = (newAccount) => {
+    setAccounts((prevAccounts) => [...prevAccounts, newAccount]);
+  };
+
+  const handleRemove = (id) => {
+    setAccounts(accounts.filter((item) => item.id !== id));
+  };
+
+  useEffect(() => {});
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <Fragment>
+      <Navbar />
+      <Form update={handleUpdate} />
+      <Main accounts={accounts} remove={handleRemove} />
+      <Footer />
+    </Fragment>
+  );
 }
 
-export default App
+export default App;
